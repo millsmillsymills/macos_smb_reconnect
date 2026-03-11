@@ -11,12 +11,17 @@ Bash script for macOS that automatically reconnects pre-defined SMB mounts when 
    ```
 
    ```
-   SMB_USER="your_username"
-   SMB_PASS="your_password"
-   SMB_SERVER="your_server"
+   SMB_USER=your_username
+   SMB_PASS=your_password
+   SMB_SERVER=your_server
+   SMB_DRIVES=drive_1,drive_2,drive_3
    ```
 
-2. Edit the `network_drives` array in `smb_reconnect.sh` with your SMB share names. Run `ls /Volumes` to list currently mounted shares.
+2. Set `.env` permissions to owner-only (the script enforces this):
+
+   ```bash
+   chmod 600 .env
+   ```
 
 3. Make the script executable:
 
@@ -48,7 +53,17 @@ Create `~/Library/LaunchAgents/com.user.smb-reconnect.plist`:
 </plist>
 ```
 
-Load with: `launchctl load ~/Library/LaunchAgents/com.user.smb-reconnect.plist`
+Load with:
+
+```bash
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.user.smb-reconnect.plist
+```
+
+Unload with:
+
+```bash
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.user.smb-reconnect.plist
+```
 
 ### crontab (alternative)
 
